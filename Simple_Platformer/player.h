@@ -17,7 +17,7 @@ public:
 	int totalRowSize = 2400, state = P_RUNNING, xToAnimate = 0, yToAnimate = 0, rectWidth = 300, rectHeight = 300;
 	player()
 	{
-		if (!texture.loadFromFile("sprites/player2.png"))
+		if (!texture.loadFromFile("sprites/player22.png"))
 			std::cout << "unable to load robo1.png\n";
 		body.setTexture(texture);
 		body.setTextureRect(sf::IntRect(0, 0, 96, 96));

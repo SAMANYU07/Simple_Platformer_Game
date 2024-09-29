@@ -21,7 +21,7 @@ public:
 		text.setFont(font);
 		text.setString("SCORE: 0");
 		text.setCharacterSize(24);
-		text.setFillColor(sf::Color::Black);
+		text.setFillColor(sf::Color::White);
 		text.setStyle(sf::Text::Bold);
 		text.setPosition(1120, 40);
 	}

@@ -27,6 +27,17 @@ void gravity(player &p)
 int main()
 {
 	sf::RenderWindow win(sf::VideoMode(1920, 1080), "Game", sf::Style::Close | sf::Style::Fullscreen);
+	sf::Sprite bgsprite;
+	sf::Texture bgtex;
+	if (!bgtex.loadFromFile("sprites/sky1.png"))
+		std::cout << "unable to load file\n";
+	bgsprite.setTexture(bgtex);
+	//float scalex = win.getSize().x / bgtex.getSize().x;
+	//float scaley = win.getSize().y / bgtex.getSize().y;
+	//float scale = std::min(scalex, scaley);
+	//bgsprite.setScale(win.getSize().x / bgtex.getSize().x, win.getSize().y / bgtex.getSize().y);
+	//bgsprite.setScale(scale, scale);
+	bgsprite.setScale(4, 2);
 	player p;
 	platform plt;
 	GUI gui;
@@ -90,7 +101,8 @@ int main()
 		gui.updateScore();
 		anim.animate(p.state, p.body, p.totalRowSize, p.xToAnimate, p.yToAnimate, p.rectWidth, p.rectHeight);
 		p.check_jump();
-		win.clear(sf::Color(135, 206, 235, 1));
+		win.clear();
+		//win.draw(bgsprite);
 		win.draw(p.body);
 		win.draw(platformArr[0].rect);
 		win.draw(platformArr[1].rect);
