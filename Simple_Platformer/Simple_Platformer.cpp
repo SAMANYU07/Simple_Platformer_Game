@@ -7,6 +7,7 @@
 #include <random>
 #include "AnimateSprite.h"
 #include "platform.h"
+#include "Particle.h"
 #define P_IDLE 0
 #define P_RUNNING 1
 #define P_JUMPING 2
@@ -21,6 +22,30 @@ void gravity(player &p)
 		p.body.move(0, 1);
 }
 
+float randomSpeed()
+{
+	std::random_device rd;
+	std::mt19937 generator(rd());
+	std::uniform_real_distribution<float> distribution(-0.2, -0.1);
+	float random_number = distribution(generator);
+	return random_number;
+}
+
+Particle* ParticleArray[10];
+
+void particleInit(Particle& p)
+{
+	p.speed = randomSpeed();
+	p.body.setPosition(rand() % 1920, rand() % 200);
+}
+
+void particleGenerator(Particle& p)
+{
+	if (p.body.getPosition().x < -100)
+		p.body.setPosition(1920 + rand() % 200, rand() % 200);
+	p.body.move(p.speed, 0);
+}
+
 
 int main()
 {
@@ -28,6 +53,12 @@ int main()
 	player p;
 	platform plt;
 	platformInit();
+	for (int i = 0; i < 10; i++)
+	{
+		float rs = randomSpeed();
+		ParticleArray[i] = new Particle(rs);
+		particleInit(*ParticleArray[i]);
+	}
 	sf::Clock initial_clock;
 	float plt_speed = -0.4;
 	bool stop = false;
@@ -86,6 +117,11 @@ int main()
 		win.draw(platformArr[1].rect);
 		win.draw(platformArr[2].rect);
 		win.draw(platformArr[3].rect);
+		for (int i = 0; i < 10; i++)
+		{
+			particleGenerator(*ParticleArray[i]);
+			win.draw(ParticleArray[i]->body);
+		}
 		gravity(p);
 		if (!stop)
 		platformGenerator(initial_clock, plt_speed, p);
