@@ -5,6 +5,7 @@
 #include "player.h"
 #include <time.h>
 #include <random>
+#include <sstream>
 #include "AnimateSprite.h"
 #include "platform.h"
 #include "Particle.h"
@@ -28,6 +29,20 @@ int main()
 	player p;
 	platform plt;
 	platformInit();
+	long long score = 0;
+	std::stringstream sst;
+	std::string tempscr;
+	sf::Clock score_clock;
+	sf::Font font;
+	if (!font.loadFromFile("fonts/Raleway-Regular.ttf"))
+		std::cout << "unable to load fonts\n";
+	sf::Text text;
+	text.setFont(font);
+	text.setString("SCORE: 0");
+	text.setCharacterSize(24);
+	text.setFillColor(sf::Color::Black);
+	text.setStyle(sf::Text::Bold);
+	text.setPosition(1120, 40);
 	for (int i = 0; i < 10; i++)
 	{
 		float rs = randomSpeed();
@@ -84,6 +99,16 @@ int main()
 			p.body.getGlobalBounds().intersects(platformArr[3].rect.getGlobalBounds())
 			))
 			p.state = P_RUNNING;
+		if (score_clock.getElapsedTime().asSeconds() >= 5)
+		{
+			score += 10;
+			sst << score;
+			sst >> tempscr;
+			sst.str("");
+			sst.clear();
+			text.setString("SCORE: " + tempscr);
+			score_clock.restart();
+		}
 		anim.animate(p.state, p.body, p.totalRowSize, p.xToAnimate, p.yToAnimate, p.rectWidth, p.rectHeight);
 		p.check_jump();
 		win.clear(sf::Color(135, 206, 235, 1));
@@ -92,6 +117,7 @@ int main()
 		win.draw(platformArr[1].rect);
 		win.draw(platformArr[2].rect);
 		win.draw(platformArr[3].rect);
+		win.draw(text);
 		for (int i = 0; i < 10; i++)
 		{
 			particleGenerator(*ParticleArray[i]);
