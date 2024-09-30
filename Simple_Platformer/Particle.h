@@ -34,12 +34,12 @@ float randomSpeed()
 void particleInit(Particle& p)
 {
 	p.speed = randomSpeed();
-	p.body.setPosition(rand() % 1920, rand() % 200);
+	p.body.setPosition(rand() % 1920, rand() % 700);
 }
 
 void particleGenerator(Particle& p)
 {
 	if (p.body.getPosition().x < -100)
-		p.body.setPosition(1920 + rand() % 200, rand() % 200);
+		p.body.setPosition(1920 + rand() % 200, rand() % 700);
 	p.body.move(p.speed, 0);
 }
