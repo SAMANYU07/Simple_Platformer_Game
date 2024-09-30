@@ -24,23 +24,30 @@ void gravity(player &p)
 		p.body.move(0, 1);
 }
 
+void gameOverCheck(player &p, sf::RenderWindow &win, bool &gameOver, GUI &gui)
+{
+	if (p.body.getPosition().x == -100 || p.body.getPosition().y > win.getSize().y)
+	{
+		if (gui.score > gui.highScore)
+		{
+			gui.highScore = gui.score;
+			gui.sst << gui.highScore;
+			gui.sst >> gui.tempscr;
+			gui.sst.str("");
+			gui.sst.clear();
+			gui.gameOverText.setString("GAME OVER \nPress 'Backspace' to Restart\nHighScore: " + gui.tempscr);
+		}
+		gameOver = true;
+	}
+}
+
 int main()
 {
 	sf::RenderWindow win(sf::VideoMode(1920, 1080), "Game", sf::Style::Close | sf::Style::Fullscreen);
-	//sf::Sprite bgsprite;
-	//sf::Texture bgtex;
-	//if (!bgtex.loadFromFile("sprites/sky4.png"))
-	//	std::cout << "unable to load file\n";
-	//bgsprite.setTexture(bgtex);
-	//float scalex = win.getSize().x / bgtex.getSize().x;
-	//float scaley = win.getSize().y / bgtex.getSize().y;
-	//float scale = std::min(scalex, scaley);
-	//bgsprite.setScale(win.getSize().x / bgtex.getSize().x, win.getSize().y / bgtex.getSize().y);
-	//bgsprite.setScale(scale, scale);
-	//bgsprite.setScale(20,12);
+	bool gameOver = false;
 	player p;
 	platform plt;
-	GUI gui;
+	GUI gui(win);
 	platformInit();
 	for (int i = 0; i < 10; i++)
 	{
@@ -70,7 +77,18 @@ int main()
 			exit(EXIT_SUCCESS);
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace))
+		{
 			p.body.setPosition(100, 100);
+			gameOver = false;
+			gui.score = 0;
+			gui.text.setString("SCORE: 0");
+		}
+		if (gameOver)
+		{
+			win.draw(gui.gameOverText);
+			win.display();
+			continue;
+		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		{
 			p.body.move(1, 0);
@@ -98,11 +116,11 @@ int main()
 			p.body.getGlobalBounds().intersects(platformArr[3].rect.getGlobalBounds())
 			))
 			p.state = P_RUNNING;
+		gameOverCheck(p, win, gameOver, gui);
 		gui.updateScore();
 		anim.animate(p.state, p.body, p.totalRowSize, p.xToAnimate, p.yToAnimate, p.rectWidth, p.rectHeight);
 		p.check_jump();
 		win.clear();
-		//win.draw(bgsprite);
 		win.draw(p.body);
 		win.draw(platformArr[0].rect);
 		win.draw(platformArr[1].rect);

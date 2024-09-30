@@ -23,6 +23,7 @@ public:
 		body.setTextureRect(sf::IntRect(0, 0, 96, 96));
 		body.setScale(0.7, 0.8);
 		body.setOrigin(311.3*0.25, 311.3 * 0.25);
+		body.setPosition(200, 200);
 		//this->body.setSize(sf::Vector2f(100, 100));
 		//this->body.setFillColor(sf::Color::Black);
 		//this->body.setOrigin(50, 50);
