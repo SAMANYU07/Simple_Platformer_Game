@@ -149,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimateSprite.h" />
+    <ClInclude Include="Crow.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="platform.h" />

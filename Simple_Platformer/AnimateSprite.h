@@ -1,10 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "player.h"
+#include "Crow.h"
 
 #define P_IDLE 0
 #define P_RUNNING 1
 #define P_JUMPING 2
+#define P_BLOCKING 3
 
 class AnimateSprite
 {
@@ -14,6 +16,8 @@ public:
 	{
 		if (state == P_JUMPING)
 			yToAnimate = 300;
+		else if (state == P_BLOCKING)
+			yToAnimate = 600;
 		else
 			yToAnimate = 0;
 		sprite.setTextureRect(sf::IntRect(xToAnimate, yToAnimate, rectWidth, rectHeight));
@@ -28,6 +32,24 @@ public:
 		{
 			xToAnimate += rectWidth;
 			this->c1.restart();
+		}
+		else if (state == P_BLOCKING && this->c1.getElapsedTime().asSeconds() >= 0.1)
+		{
+			if (xToAnimate == rowTotalSize - rectWidth)
+				state = P_RUNNING;
+			xToAnimate += rectWidth;
+			this->c1.restart();
+		}
+	}
+	void animteCrow(sf::Sprite& sprite, sf::Clock &clock, int rowTotalSize, int& xToAnimate, int yToAnimate, int rectWidth, int rectHeight)
+	{
+		if (xToAnimate >= rowTotalSize - rectWidth)
+			xToAnimate = 44;
+		if (clock.getElapsedTime().asMilliseconds() >= 50)
+		{
+			xToAnimate += rectWidth + (2*45);
+			sprite.setTextureRect(sf::IntRect(xToAnimate, 0, rectWidth, rectHeight));
+			clock.restart();
 		}
 	}
 };
