@@ -25,7 +25,7 @@ public:
 	void spawn()
 	{
 		if (this->body.getPosition().x < 0)
-			this->body.setPosition(1920 + rand() % 100, rand() % 500);
+			this->body.setPosition(2400 + rand() % 500, rand() % 500);
 		this->body.move(-1, 0);
 	}
 };
