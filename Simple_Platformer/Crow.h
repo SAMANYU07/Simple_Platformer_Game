@@ -11,9 +11,10 @@ public:
 	sf::Texture tex;
 	sf::Clock crowClock;
 	int totalRowSize = 4200, xToAnimate = 44, yToAnimate = 64, rectWidth = 207, rectHeight = 265;
+	bool deflected = false;
 	Crow()
 	{
-		if (!tex.loadFromFile("sprites/crowE1.png"))
+		if (!tex.loadFromFile("sprites/crowE2.png"))
 			std::cout << "Unable to load crowE1.png\n";
 		this->body.setTexture(tex);
 		//this->body.setPosition(800, 600);
