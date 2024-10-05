@@ -17,7 +17,7 @@ public:
 		if (!tex.loadFromFile("sprites/crowE2.png"))
 			std::cout << "Unable to load crowE1.png\n";
 		this->body.setTexture(tex);
-		//this->body.setPosition(800, 600);
+		this->body.setPosition(1920, 600);
 		this->body.setScale(0.5, 0.5);
 		//this->body.setColor(sf::Color::Blue);
 		this->xToAnimate = 0;
