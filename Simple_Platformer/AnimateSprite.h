@@ -41,14 +41,20 @@ public:
 			this->c1.restart();
 		}
 	}
-	void animteCrow(sf::Sprite& sprite, sf::Clock &clock, int rowTotalSize, int& xToAnimate, int yToAnimate, int rectWidth, int rectHeight)
+	void animteCrow(bool &deflected, bool &dead , sf::Sprite& sprite, sf::Clock &clock, int rowTotalSize, int& xToAnimate, int yToAnimate, int rectWidth, int rectHeight)
 	{
-		if (xToAnimate >= rowTotalSize - rectWidth)
-			xToAnimate = 44;
+		if (!deflected && xToAnimate >= rowTotalSize - rectWidth)
+			xToAnimate = 0;
+		else if (deflected && xToAnimate >= rowTotalSize - rectWidth)
+		{
+			dead = true;
+			xToAnimate = 0;
+			deflected = false;
+		}
 		if (clock.getElapsedTime().asMilliseconds() >= 50)
 		{
-			xToAnimate += rectWidth + (2*45);
-			sprite.setTextureRect(sf::IntRect(xToAnimate, 0, rectWidth, rectHeight));
+			xToAnimate += rectWidth;
+			sprite.setTextureRect(sf::IntRect(xToAnimate, yToAnimate, rectWidth, rectHeight));
 			clock.restart();
 		}
 	}

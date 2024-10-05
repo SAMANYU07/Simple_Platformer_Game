@@ -125,10 +125,15 @@ int main()
 			p.body.getGlobalBounds().intersects(platformArr[3].rect.getGlobalBounds())
 			))
 			p.state = P_RUNNING;
+		if (p.BLOCK_STATE && p.body.getGlobalBounds().intersects(crow.body.getGlobalBounds()))
+		{
+			crow.deflected = true;
+			crow.yToAnimate = 100;
+		}
 		gameOverCheck(p, win, gameOver, gui, crow);
 		gui.updateScore();
 		anim.animate(p.state, p.body, p.totalRowSize, p.xToAnimate, p.yToAnimate, p.rectWidth, p.rectHeight);
-		anim.animteCrow(crow.body, crow.crowClock, crow.totalRowSize, crow.xToAnimate, crow.yToAnimate, crow.rectWidth, crow.rectHeight);
+		anim.animteCrow(crow.deflected, crow.dead, crow.body, crow.crowClock, crow.totalRowSize, crow.xToAnimate, crow.yToAnimate, crow.rectWidth, crow.rectHeight);
 		p.check_jump();
 		p.check_block();
 		win.clear();
@@ -138,7 +143,8 @@ int main()
 		win.draw(platformArr[2].rect);
 		win.draw(platformArr[3].rect);
 		win.draw(gui.text);
-		win.draw(crow.body);
+		if (!crow.dead)
+			win.draw(crow.body);
 		for (int i = 0; i < 10; i++)
 		{
 			particleGenerator(*ParticleArray[i]);
