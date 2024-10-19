@@ -27,7 +27,7 @@ public:
 	{
 		if (!dead && this->body.getPosition().x < 0)
 			this->body.setPosition(2400 + rand() % 500, rand() % 500);
-		else if (dead && this->body.getPosition().x < 0)
+		else if (this->dead && this->body.getPosition().x < 0)
 		{
 			this->dead = false;
 			this->yToAnimate = 0;
