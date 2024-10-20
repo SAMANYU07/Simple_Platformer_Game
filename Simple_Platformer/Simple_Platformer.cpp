@@ -11,6 +11,7 @@
 #include "Particle.h"
 #include "GUI.h"
 #include "Crow.h"
+#include "Projectile.h"
 #define P_IDLE 0
 #define P_RUNNING 1
 #define P_JUMPING 2
@@ -28,7 +29,7 @@ void gravity(player &p)
 
 void gameOverCheck(player &p, sf::RenderWindow &win, bool &gameOver, GUI &gui, Crow &crow)
 {
-	if ((p.body.getPosition().x == -100 || p.body.getPosition().y > win.getSize().y) || (p.body.getGlobalBounds().intersects(crow.body.getGlobalBounds()) && p.state != P_BLOCKING))
+	if ((p.body.getPosition().x == -100 || p.body.getPosition().y > win.getSize().y) || (p.body.getGlobalBounds().intersects(crow.body.getGlobalBounds()) && p.state != P_BLOCKING && !crow.dead))
 	{
 		if (gui.score > gui.highScore)
 		{
@@ -51,6 +52,7 @@ int main()
 	platform plt;
 	GUI gui(win);
 	Crow crow;
+	Projectile projectile;
 	platformInit();
 	for (int i = 0; i < 10; i++)
 	{
@@ -119,16 +121,27 @@ int main()
 			p.state = P_BLOCKING;
 			p.yToAnimate = 200;
 		}
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !projectile.shooted)
+		{
+			projectile.shooted = true;
+			projectile.shootProjectile(p.body.getPosition().x, p.body.getPosition().y);
+		}
 		if (!p.JUMP_STATE && !p.BLOCK_STATE && (p.body.getGlobalBounds().intersects(platformArr[0].rect.getGlobalBounds()) ||
 			p.body.getGlobalBounds().intersects(platformArr[1].rect.getGlobalBounds()) ||
 			p.body.getGlobalBounds().intersects(platformArr[2].rect.getGlobalBounds()) ||
 			p.body.getGlobalBounds().intersects(platformArr[3].rect.getGlobalBounds())
 			))
 			p.state = P_RUNNING;
-		if (p.BLOCK_STATE && p.body.getGlobalBounds().intersects(crow.body.getGlobalBounds()))
+		if ((p.BLOCK_STATE && p.body.getGlobalBounds().intersects(crow.body.getGlobalBounds())) || crow.body.getGlobalBounds().intersects(projectile.body.getGlobalBounds()))
 		{
 			crow.deflected = true;
 			crow.yToAnimate = 100;
+		}
+		if (projectile.shooted)
+		{
+			projectile.body.move(4, 0);
+			if (projectile.body.getPosition().x >= win.getSize().x)
+				projectile.shooted = false;
 		}
 		gameOverCheck(p, win, gameOver, gui, crow);
 		gui.updateScore();
@@ -143,6 +156,8 @@ int main()
 		win.draw(platformArr[2].rect);
 		win.draw(platformArr[3].rect);
 		win.draw(gui.text);
+		//if (projectile.shooted)
+			win.draw(projectile.body);
 		if (!crow.dead)
 			win.draw(crow.body);
 		for (int i = 0; i < 10; i++)

@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "player.h"
 #include "Crow.h"
+#include "Projectile.h"
 
 #define P_IDLE 0
 #define P_RUNNING 1
