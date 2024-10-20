@@ -132,17 +132,21 @@ int main()
 			p.body.getGlobalBounds().intersects(platformArr[3].rect.getGlobalBounds())
 			))
 			p.state = P_RUNNING;
-		if ((p.BLOCK_STATE && p.body.getGlobalBounds().intersects(crow.body.getGlobalBounds())) || crow.body.getGlobalBounds().intersects(projectile.body.getGlobalBounds()))
+		if ((p.BLOCK_STATE && p.body.getGlobalBounds().intersects(crow.body.getGlobalBounds())) || (crow.body.getGlobalBounds().intersects(projectile.body.getGlobalBounds()) && projectile.shooted))
 		{
 			crow.deflected = true;
 			crow.yToAnimate = 100;
 			projectile.shooted = false;
+			projectile.body.setPosition(0, 0);
 		}
 		if (projectile.shooted)
 		{
 			projectile.body.move(4, 0);
 			if (projectile.body.getPosition().x >= win.getSize().x)
+			{
 				projectile.shooted = false;
+				projectile.body.setPosition(0, 0);
+			}
 		}
 		gameOverCheck(p, win, gameOver, gui, crow);
 		gui.updateScore();
