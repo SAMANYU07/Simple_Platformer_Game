@@ -115,7 +115,7 @@ int main()
 				p.state = P_JUMPING;
 			}
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::X) || sf::Mouse::isButtonPressed(sf::Mouse::Right))
 		{
 			p.block();
 			p.state = P_BLOCKING;
@@ -136,6 +136,7 @@ int main()
 		{
 			crow.deflected = true;
 			crow.yToAnimate = 100;
+			projectile.shooted = false;
 		}
 		if (projectile.shooted)
 		{
@@ -156,7 +157,7 @@ int main()
 		win.draw(platformArr[2].rect);
 		win.draw(platformArr[3].rect);
 		win.draw(gui.text);
-		//if (projectile.shooted)
+		if (projectile.shooted)
 			win.draw(projectile.body);
 		if (!crow.dead)
 			win.draw(crow.body);
