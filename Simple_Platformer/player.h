@@ -39,12 +39,12 @@ public:
 			this->JUMP_STATE = true;
 		}
 	}
-	void check_jump()
+	void check_jump(float deltaTime)
 	{
 		if (this->JUMP_STATE && this->jump_clock.getElapsedTime().asMilliseconds() >= 200)
 			this->JUMP_STATE = false;
 		else if (this->JUMP_STATE && this->jump_clock.getElapsedTime().asMilliseconds() < 400)
-			this->body.move(0, -2);
+			this->body.move(0, -2800 * deltaTime);
 	}
 	void block()
 	{

@@ -48,7 +48,7 @@ void platformInit()
 	platformArr[3].prevPlatform = &platformArr[2];
 }
 
-void platformGenerator(sf::Clock& clock, float& speed, player& p)
+void platformGenerator(sf::Clock& clock, float& speed, player& p, float deltaTime)
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -60,9 +60,9 @@ void platformGenerator(sf::Clock& clock, float& speed, player& p)
 		speed -= 0.1;
 		clock.restart();
 	}
-	platformArr[0].rect.move(speed, 0);
-	platformArr[1].rect.move(speed, 0);
-	platformArr[2].rect.move(speed, 0);
-	platformArr[3].rect.move(speed, 0);
+	platformArr[0].rect.move(speed * deltaTime, 0);
+	platformArr[1].rect.move(speed * deltaTime, 0);
+	platformArr[2].rect.move(speed * deltaTime, 0);
+	platformArr[3].rect.move(speed * deltaTime, 0);
 	//p.body.rotate(speed * -1);
 }

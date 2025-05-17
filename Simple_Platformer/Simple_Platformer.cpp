@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <stdlib.h>
+#include <SFML/OpenGL.hpp>
 #include "player.h"
 #include <time.h>
 #include <random>
@@ -17,19 +18,19 @@
 #define P_JUMPING 2
 #define P_BLOCKING 3
 
-void gravity(player &p)
+void gravity(player &p, float deltaTime)
 {
 	if (!p.body.getGlobalBounds().intersects(platformArr[0].rect.getGlobalBounds()) &&
 		!p.body.getGlobalBounds().intersects(platformArr[1].rect.getGlobalBounds()) &&
 		!p.body.getGlobalBounds().intersects(platformArr[2].rect.getGlobalBounds()) &&
 		!p.body.getGlobalBounds().intersects(platformArr[3].rect.getGlobalBounds())
 		)
-		p.body.move(0, 1);
+		p.body.move(0, 1400 * deltaTime);
 }
 
 void gameOverCheck(player &p, sf::RenderWindow &win, bool &gameOver, GUI &gui, Crow &crow)
 {
-	if ((p.body.getPosition().x == -100 || p.body.getPosition().y > win.getSize().y) || (p.body.getGlobalBounds().intersects(crow.body.getGlobalBounds()) && p.state != P_BLOCKING && !crow.dead))
+	if ((p.body.getPosition().x == -100 || p.body.getPosition().y > win.getSize().y) || (p.body.getGlobalBounds().intersects(crow.body.getGlobalBounds()) && p.state != P_BLOCKING && (!crow.dead && !crow.deflected)))
 	{
 		if (gui.score > gui.highScore)
 		{
@@ -61,12 +62,17 @@ int main()
 		particleInit(*ParticleArray[i]);
 	}
 	sf::Clock initial_clock;
-	float plt_speed = -0.4;
+	sf::Clock deltaClock;
+	float plt_speed = -800;
 	bool stop = false;
 	srand(static_cast<unsigned int>(time(0)));
 	AnimateSprite anim;
+	const GLubyte* renderer = glGetString(GL_RENDERER);
+	std::cout << "GPU Renderer: " << renderer << std::endl;
+	//win.setFramerateLimit(60);
 	while (win.isOpen())
 	{
+		float deltaTime = deltaClock.restart().asSeconds(); 
 		sf::Event evt;
 		while (win.pollEvent(evt))
 		{
@@ -96,11 +102,11 @@ int main()
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
-			p.body.move(1, 0);
+			p.body.move(1000 * deltaTime, 0);
 			anim.animate(p.state ,p.body, 4096, p.xToAnimate, p.yToAnimate, p.rectWidth, p.rectHeight);
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-			p.body.move(-1, 0);
+			p.body.move(-1000 * deltaTime, 0);
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
 			stop = !stop;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -141,7 +147,7 @@ int main()
 		}
 		if (projectile.shooted)
 		{
-			projectile.body.move(4, 0);
+			projectile.body.move(5000 * deltaTime, 0);
 			if (projectile.body.getPosition().x >= win.getSize().x)
 			{
 				projectile.shooted = false;
@@ -152,7 +158,7 @@ int main()
 		gui.updateScore();
 		anim.animate(p.state, p.body, p.totalRowSize, p.xToAnimate, p.yToAnimate, p.rectWidth, p.rectHeight);
 		anim.animteCrow(crow.deflected, crow.dead, crow.body, crow.crowClock, crow.totalRowSize, crow.xToAnimate, crow.yToAnimate, crow.rectWidth, crow.rectHeight);
-		p.check_jump();
+		p.check_jump(deltaTime);
 		p.check_block();
 		win.clear();
 		win.draw(p.body);
@@ -167,13 +173,13 @@ int main()
 			win.draw(crow.body);
 		for (int i = 0; i < 10; i++)
 		{
-			particleGenerator(*ParticleArray[i]);
+			particleGenerator(*ParticleArray[i], deltaTime);
 			win.draw(ParticleArray[i]->body);
 		}
-		gravity(p);
+		gravity(p, deltaTime);
 		if (!stop)
-		platformGenerator(initial_clock, plt_speed, p);
-		crow.spawn();
+		platformGenerator(initial_clock, plt_speed, p, deltaTime);
+		crow.spawn(deltaTime);
 		win.display();
 	}
 }

@@ -26,7 +26,7 @@ float randomSpeed()
 {
 	std::random_device rd;
 	std::mt19937 generator(rd());
-	std::uniform_real_distribution<float> distribution(-0.2, -0.1);
+	std::uniform_real_distribution<float> distribution(-32, -16);
 	float random_number = distribution(generator);
 	return random_number;
 }
@@ -37,9 +37,9 @@ void particleInit(Particle& p)
 	p.body.setPosition(rand() % 1920, rand() % 700);
 }
 
-void particleGenerator(Particle& p)
+void particleGenerator(Particle& p, float deltaTime)
 {
 	if (p.body.getPosition().x < -100)
 		p.body.setPosition(1920 + rand() % 200, rand() % 700);
-	p.body.move(p.speed, 0);
+	p.body.move(p.speed * deltaTime, 0);
 }

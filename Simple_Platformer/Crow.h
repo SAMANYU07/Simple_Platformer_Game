@@ -23,15 +23,15 @@ public:
 		this->xToAnimate = 0;
 		srand(time(0));
 	}
-	void spawn()
+	void spawn(float deltaTime)
 	{
-		if (!dead && this->body.getPosition().x < 0)
+		if (!this->dead && this->body.getPosition().x < 0)
 			this->body.setPosition(2400 + rand() % 500, rand() % 500);
 		else if (this->dead && this->body.getPosition().x < 0)
 		{
 			this->dead = false;
 			this->yToAnimate = 0;
 		}
-		this->body.move(-1, 0);
+		this->body.move(-2000 * deltaTime, 0);
 	}
 };
