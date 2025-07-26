@@ -69,7 +69,10 @@ int main()
 	AnimateSprite anim;
 	const GLubyte* renderer = glGetString(GL_RENDERER);
 	std::cout << "GPU Renderer: " << renderer << std::endl;
+	if (!sf::Joystick::isConnected(0))
+		std::cout << "Controller not connected!\n";
 	//win.setFramerateLimit(60);
+	sf::Joystick::update();
 	while (win.isOpen())
 	{
 		float deltaTime = deltaClock.restart().asSeconds(); 
@@ -82,12 +85,12 @@ int main()
 				exit(EXIT_SUCCESS);
 			}
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, sf::Joystick::R))
 		{
 			win.close();
 			exit(EXIT_SUCCESS);
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace) || sf::Joystick::isButtonPressed(0, sf::Joystick::Y))
 		{
 			p.body.setPosition(100, 100);
 			gameOver = false;
@@ -100,16 +103,17 @@ int main()
 			win.display();
 			continue;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		sf::Joystick::update();
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Joystick::getAxisPosition(0, sf::Joystick::X) > 50 || sf::Joystick::isButtonPressed(0, 14))
 		{
 			p.body.move(1000 * deltaTime, 0);
 			anim.animate(p.state ,p.body, 4096, p.xToAnimate, p.yToAnimate, p.rectWidth, p.rectHeight);
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Joystick::getAxisPosition(0, sf::Joystick::X) < -50)
 			p.body.move(-1000 * deltaTime, 0);
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
 			stop = !stop;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < -50 || sf::Joystick::isButtonPressed(0, sf::Joystick::X))
 		{
 			if (!p.JUMP_STATE && (p.body.getGlobalBounds().intersects(platformArr[0].rect.getGlobalBounds()) ||
 				p.body.getGlobalBounds().intersects(platformArr[1].rect.getGlobalBounds()) ||
@@ -127,7 +131,7 @@ int main()
 			p.state = P_BLOCKING;
 			p.yToAnimate = 200;
 		}
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !projectile.shooted)
+		if ((sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Joystick::isButtonPressed(0, sf::Joystick::Z)) && !projectile.shooted)
 		{
 			projectile.shooted = true;
 			projectile.shootProjectile(p.body.getPosition().x, p.body.getPosition().y);
